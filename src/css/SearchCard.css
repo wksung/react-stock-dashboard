@@ -1,0 +1,27 @@
+.search.card-container{
+    padding: 10px;
+    font-size: 13px;
+    height: calc(43% - 10px);
+}
+
+.search.card-container .card-body{
+    padding: 10px;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stock-code__value{
+    text-transform: uppercase;
+}
+
+.btn-search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-search svg{
+    margin-left: 7px;
+}

@@ -1,0 +1,43 @@
+.table-data.card-container{
+    padding: 10px;
+    font-size: 13px;
+    margin-top: 20px;
+    height: calc(100% - 20px);
+    overflow: scroll;
+}
+
+.table-data.card-container .card-body{
+    padding: 10px;
+    font-size: 13px;
+}
+
+.table-data-row{
+    height: 40%;
+}
+
+.table-data-col{
+    height: 100%;
+}
+
+.table{
+    color: white;
+}
+
+.table thead th{
+    border-bottom: 1px solid white !important;
+}
+
+.green-text{
+    color: #81b737;
+}
+
+.red-text{
+    color: #d54f4f;
+}
+
+.no-data-message{
+    position: absolute;
+    top: 53%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -1,0 +1,47 @@
+.card-container{
+    background-color: #272952;
+}
+
+.app-container__row{
+    height: 60%;
+    overflow: hidden;
+}
+
+.app-container__container{
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.app-container__left{
+    width: calc(30% - 10px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.app-container__right{
+    height: 100%;
+    width: calc(70% - 10px);
+}
+
+.graph.card-container{
+    height: 100%;
+}
+
+.app-container{
+    height: 100vh;
+    padding: 20px;
+    background: #15103a;
+    color: white;
+};
+
+.graph.card-container .card-body{
+    height: calc(60vh - 15px);
+}
+
+.ct-label{
+    color: white;
+}

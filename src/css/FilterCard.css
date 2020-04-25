@@ -1,0 +1,36 @@
+.filter.card-container{
+    padding: 10px;
+    font-size: 13px;
+    height: calc(57% - 10px);
+}
+
+.filter.card-container .card-body{
+    padding: 10px;
+    font-size: 13px;
+}
+
+.filter-card-date{
+    justify-content: space-between;
+}
+
+.filter-card-date .filter-card-date-div{
+    width: calc(50% - 10px);
+}
+
+.btn-filter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-filter svg{
+    margin-left: 7px;
+}
+
+.no-filter-message{
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+}
