@@ -10,36 +10,72 @@ class SearchCard extends React.Component{
         search_stockArray: []
     };
 
+    componentDidMount(){
+        document.querySelector(".btn-search").disabled = true;
+    }
+
+    componentDidUpdate(){
+        if(document.querySelector(".btn-search").value === ''){
+            document.querySelector(".btn-search").disabled = true;
+        }
+    }
+
     // when we type in a code this gets triggered
     sendSearchResult = async () => {
-        let stockValue = document.querySelector(".stock-code__value").value;
+        let stockValue = document.querySelector(".stock-code__value").value.toUpperCase();
 
-        const response = await stock.get('/quote', {
+        let startDate = Math.round(new Date().getTime() / 1000);
+        
+        // TESTING: changing this to 48 hour as weekend
+        let endDate = startDate - (48 * 3600);
+
+        const table_response = await stock.get('/quote', {
             params: {
               symbol: stockValue,
-              token: 'api_key'
+              token: 'bqhq9i7rh5rbubolrqd0'
+            }
+        });
+
+        const graph_response = await stock.get('/stock/candle', {
+            params: {
+              symbol: stockValue,
+              resolution: 5,
+              from: endDate,
+              to: startDate,
+              token: 'bqhq9i7rh5rbubolrqd0'
             }
         });
         
         this.setState({
-            search_stockArray: this.state.search_stockArray.concat(stockValue)
+            search_stockArray: this.state.search_stockArray.concat(stockValue),
         }, () => {
             
             // bring the response data and array back up to App.js
-            this.props.sendSearchResult(response.data);
+            this.props.sendSearchResult(table_response.data);
+            this.props.sendSearchGraphResult(graph_response.data);
+
             this.props.sendArrayListResult(this.state.search_stockArray);
 
             document.querySelector(".stock-code__value").value = '';
         })
-    }
+    };
+
+    validateBtn = (val) => {
+        let btnDOM = document.querySelector(".btn-search");
+        val === '' ? btnDOM.disabled = true : btnDOM.disabled = false;
+    };
 
     render(){
         return (
             <div className="card card-container search">
                 <div className="card-body">
                     <h2 className="h6 mb-0">Search Stock Code:</h2>
-                    <input type="text" className="form-control stock-code__value" placeholder="Stock Code (e.g. AAPL)"></input>
-                    <button className="btn btn-primary w-100 btn-search" onClick={ this.sendSearchResult }>Search Results<FaSearch /></button>
+                    <input type="text" 
+                           className="form-control stock-code__value" 
+                           placeholder="Stock Code (e.g. AAPL)" 
+                           onKeyUp={ (e) => this.validateBtn(e.target.value) }>
+                    </input>
+                    <button className="btn btn-secondary w-100 btn-search" onClick={ this.sendSearchResult }>Search Results<FaSearch /></button>
                 </div>
             </div>
         );

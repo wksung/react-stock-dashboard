@@ -39,15 +39,15 @@ class TableDataCard extends React.Component{
         return (
             <div className="card card-container table-data">
                 <div className="card-body">
-                    <h2 className="h6 mb-3">Latest 24 hrs data:</h2>
+                    <h2 className="h6 mb-3">Latest available data:</h2>
                     { 
-                        this.props.showFilter 
+                        this.props.showTableData 
                         ? 
                         <table className="table">
                             <thead>
                                 <tr>
                                 <th scope="col">Stock Code</th>
-                                <th scope="col">Current Data Date</th>
+                                <th scope="col">Last Updated Data</th>
                                 <th scope="col">Open Price</th>
                                 <th scope="col">High Price</th>
                                 <th scope="col">Low Price</th>
