@@ -6,6 +6,10 @@ import { FaSearch } from 'react-icons/fa'
 
 class SearchCard extends React.Component{
 
+    // COMMENT: Not Done
+
+    // TODO: no duplicate stock
+
     state = {
         search_stockArray: []
     };
@@ -23,10 +27,7 @@ class SearchCard extends React.Component{
     // when we type in a code this gets triggered
     sendSearchResult = async () => {
         let stockValue = document.querySelector(".stock-code__value").value.toUpperCase();
-
         let startDate = Math.round(new Date().getTime() / 1000);
-        
-        // TESTING: changing this to 48 hour as weekend
         let endDate = startDate - (48 * 3600);
 
         const table_response = await stock.get('/quote', {
@@ -49,13 +50,9 @@ class SearchCard extends React.Component{
         this.setState({
             search_stockArray: this.state.search_stockArray.concat(stockValue),
         }, () => {
-            
-            // bring the response data and array back up to App.js
             this.props.sendSearchResult(table_response.data);
-            this.props.sendSearchGraphResult(graph_response.data);
-
+            this.props.sendSearchGraphResult({stockValue: stockValue, response: graph_response.data});
             this.props.sendArrayListResult(this.state.search_stockArray);
-
             document.querySelector(".stock-code__value").value = '';
         })
     };

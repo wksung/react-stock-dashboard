@@ -4,16 +4,24 @@ import '../css/GraphCard.css';
 
 class GraphCard extends React.Component{
 
+  // COMMENT: Not Done
+
+  // TODO: PLEASE TWO WAY BIND WITH FILTERCARD DROPDOWN -> don't use stockArray
+
+  // TODO: change graph colour by it's PC > C
+  // TODO: add date next to the stock
+
   chartRef = React.createRef();
     
   componentDidUpdate() {
 
     // if there is actual data
     if(this.props.showGraphData && this.props.graphData !== 'no_data'){
+      
       var lowOrHighColor = 
-                      this.props.tableData[this.props.tableData.length - 1].c > 
-                      this.props.tableData[this.props.tableData.length - 1].pc ? '#81b737' : '#d54f4f';
-            
+                      this.props.graphData[this.props.graphData.length - 1].y_axis[this.props.graphData[this.props.graphData.length - 1].y_axis.length - 1] > 
+                      this.props.graphData[this.props.graphData.length - 1].y_axis[0] ? '#81b737' : '#d54f4f';
+
       for(var i = 0; i < this.props.graphData.length; i++){
         const myChartRef = this.chartRef.current.getContext("2d");
       
@@ -74,7 +82,7 @@ class GraphCard extends React.Component{
         });
       };
       // show the latest one
-      this.checkStockCode(this.props.stockArray[this.props.stockArray.length - 1]);
+      this.checkStockCode(this.props.graphData[this.props.graphData.length - 1].stockValue);
     }else{
       // if the data is no_data then show this message
       document.querySelector(".no-graph-data-message").innerHTML = 
@@ -83,14 +91,14 @@ class GraphCard extends React.Component{
   };
 
   checkStockCode = (stockCode) => {
-    let stockArray = this.props.stockArray;
+    let stockArray = this.props.graphData;
     let graphDOMALL = document.querySelectorAll(".graphDOM");
 
     for(var i = 0; i < stockArray.length; i++){
       // make all none
       graphDOMALL[i].style.display = 'none';
 
-      if(stockArray[i] === stockCode){
+      if(stockArray[i].stockValue === stockCode){
         // if the stockcode is matching then show it
         document.querySelector(".graphDOM."+stockCode).style.display = 'block';
       }
@@ -102,25 +110,25 @@ class GraphCard extends React.Component{
       let canvaDOM = '';
 
       // reverse to make the last one appear in the select
-      optionSelectDOM = this.props.stockArray.map((stock, index) => {
+      optionSelectDOM = this.props.graphData.map((graphData, index) => {
           return (
               <option 
-                value={ stock } 
+                value={ graphData.stockValue } 
                 key={ index }
-                selected={ stock === this.props.stockArray[this.props.stockArray.length - 1] ? 'selected' : 'no' }>
-                { stock }
+                selected={ graphData.stockValue === this.props.graphData[this.props.graphData.length - 1] ? 'selected' : 'no' }>
+                { graphData.stockValue }
               </option>
           )
       });
 
       // looping through the canvas graph DOM
-      canvaDOM = this.props.stockArray.map((stock, index) => {
+      canvaDOM = this.props.graphData.map((graphData, index) => {
           return (
             // hiding and showing between graphs
-            <div key={ index } className={ index === 0 ? stock + ' ds-block graphDOM' : stock + ' ds-none graphDOM' }>
-              <h2 className="h5 mb-3">{ stock }</h2>
+            <div key={ index } className={ index === 0 ? graphData.stockValue + ' ds-block graphDOM' : graphData.stockValue + ' ds-none graphDOM' }>
+              <h2 className="h5 mb-3 stockValue">{ this.props.graphData[this.props.graphData.length - 1].stockValue }</h2>
               <canvas 
-                id={ 'myChart-' + stock }
+                id={ 'myChart-' + graphData.stockValue }
                 className="myChart"
                 ref={this.chartRef}
               /> 
