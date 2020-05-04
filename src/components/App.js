@@ -7,6 +7,8 @@ import '../css/styles.css';
 
 class App extends React.Component{
     
+    // FIX: fix for latest 24h
+
     // TODO: add into sessionStorage and load it, if it exists
     // TODO: load circle bar
 
@@ -19,6 +21,17 @@ class App extends React.Component{
         showTableData: false,
         showGraphData: false,
     }
+
+    // @desc: this componentDidUpdate is showing the latest graph which has 
+    //        been searched and hiding the rest
+    componentDidUpdate(){
+        this.state.graphData.map((graphData, index) => {
+            document.querySelector('#myChart-' + graphData.stockValue).style.display = "none";
+            if(index === this.state.graphData.length - 1){
+                document.querySelector('#myChart-' + graphData.stockValue).style.display = "block";
+            }
+        }); 
+    };
 
     // @desc: SearchCard.js does an API call and sends the relevant data for
     //        the TableDataCard.js, through this you need to truesy the showFilterDOM,
@@ -66,7 +79,12 @@ class App extends React.Component{
                 });
                 this.setState({
                     graphData: abc,
-                    activeStockValue: response_data.stockValue
+                    activeStockValue: response_data.stockValue,
+                    showGraphData: true
+                }, () => {
+                    this.setState({
+                        showGraphData: true
+                    })
                 });
             };
         };
@@ -91,14 +109,24 @@ class App extends React.Component{
                         x_axis: converted_array,
                         y_axis: graph_array.response.c,
                     }),
-                    showGraphData: true,
-                    activeStockValue: graph_array.stockValue
+                    activeStockValue: graph_array.stockValue,
+                    showGraphData: true
+                }, () => {
+                    // this makes the second graph and above show
+                    this.setState({
+                        showGraphData: true
+                    })
                 });
             }else{
                 this.setState({
                     graphData: this.state.graphData.concat({
                         stockValue: graph_array.stockValue, 
-                        response: "no_data"
+                        response: "no_data",
+                        showGraphData: true
+                    })
+                }, () => {
+                    this.setState({
+                        showGraphData: true
                     })
                 });
             }
@@ -107,7 +135,58 @@ class App extends React.Component{
         };
     };
 
+    // @desc: same as componentDidUpdate, hide all and display only that has been selected
+
+    // @param: stockValue => string of the select (e.g. AAPL)
+    checkStockCode = (stockValue) => {
+        this.state.graphData.map((graphData, index) => {
+            document.querySelector('#myChart-' + graphData.stockValue).style.display = "none";
+            if(index === this.state.graphData.length - 1){
+                document.querySelector('#myChart-' + stockValue).style.display = "block";
+            }
+        }); 
+    }
+
     render(){
+        let graphCardDOM = '';
+        let optionSelectDOM = '';
+
+        // @condition: check if showGraphData is true
+        if(this.state.showGraphData){
+            // loop through the data and make each graph
+            graphCardDOM = this.state.graphData.map((graphData, index) => {
+                if(graphData.response !== "no_data"){
+                    return (
+                        <GraphCard
+                            key = { index }
+                            tableData = { this.state.tableData }
+                            showGraphData = { this.state.showGraphData }
+                            showActiveStockCode = { this.state.activeStockValue }
+                            graphData = { graphData }
+                            filteredData = { this.state.filteredData }
+                            showFilterData = { this.state.showFilterData }>
+                        </GraphCard>
+                    );
+                }else{
+                    return(
+                        <p key={ index } className="no-graph-data-message">No Data Currently Available. Markets are closed during weekends and public holidays. Please filter by previous date.</p>
+                    )
+                };
+            });
+        };
+  
+        // @dom: show all the stock value as a option in select
+        optionSelectDOM = this.state.graphData.map((graphData, index) => {
+            return (
+                <option 
+                value={ graphData.stockValue } 
+                key={ index }
+                selected={ this.state.graphData[this.state.graphData.length - 1] === graphData ? "selected" : "" }>
+                  { graphData.stockValue }
+                </option>
+            )
+        });
+
         return (
             <div className="container-fluid app-container">
                 <div className="row app-container__row">
@@ -126,15 +205,22 @@ class App extends React.Component{
                         </div>
                         <div className="app-container__right">
                             <div className="card card-container graph">
-                                <div className="card-body" style={{ overflow: 'scroll' }}>
-                                    <GraphCard
-                                        tableData = { this.state.tableData }
-                                        showGraphData = { this.state.showGraphData }
-                                        showActiveStockCode = { this.state.activeStockValue }
-                                        graphData = { this.state.graphData }
-                                        filteredData = { this.state.filteredData }
-                                        showFilterData = { this.state.showFilterData }>
-                                    </GraphCard>
+                                <div className="card-body">
+                                    { 
+                                        this.state.showGraphData 
+                                        ? 
+                                        // add the select field
+                                        <div>
+                                            <select className="custom-select main__chart-select" onChange={ (e) => this.checkStockCode(e.target.value) }>
+                                                { optionSelectDOM }
+                                            </select>
+                                            { graphCardDOM }
+                                        </div>
+                                        : 
+                                        <p className="no-graph-data-message">
+                                            No current stock found. Please go to the first box and search for a stock.
+                                        </p> 
+                                    }
                                 </div>
                             </div>
                         </div>

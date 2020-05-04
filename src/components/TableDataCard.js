@@ -57,8 +57,8 @@ class TableDataCard extends React.Component{
                             this.state.currency + table.pc.toFixed(2) ? 
                             'green-text font-weight-bold' : 'red-text font-weight-bold' }>{ (100 - (table.pc.toFixed(2)/table.c.toFixed(2))*100).toFixed(2) + '%' }</td>
                     </tr>
-                )
-            }
+                );
+            };
         });
 
         return (

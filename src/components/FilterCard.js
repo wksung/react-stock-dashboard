@@ -6,8 +6,7 @@ import { FaChartBar } from 'react-icons/fa';
 
 class FilterCard extends React.Component{
 
-    // TODO: select option
-    // TODO: change values by filter
+    // FIX: when you filter on weekend it breaks
 
     state = {
         validator_start_date: '',
@@ -95,7 +94,8 @@ class FilterCard extends React.Component{
             return (
                 <option 
                     value={ graphData.stockValue } 
-                    key={ index } defaultValue={ this.props.showActiveStockCode || '' }>
+                    key={ index }
+                    selected={ this.props.showGraphData[this.props.showGraphData.length - 1] === graphData ? "selected" : "" }>
                         { graphData.stockValue }
                 </option>
             )

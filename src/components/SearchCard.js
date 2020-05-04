@@ -6,8 +6,6 @@ import { FaSearch } from 'react-icons/fa'
 
 class SearchCard extends React.Component{
 
-    // TODO: no duplicate stock
-
     state = {
         search_stockArray: []
     };
@@ -35,6 +33,15 @@ class SearchCard extends React.Component{
         let stockValue = document.querySelector(".stock-code__value").value.toUpperCase();
         let startDate = Math.round(new Date().getTime() / 1000);
         let endDate = startDate - (72 * 3600);
+        let checkForExist = false;
+
+        // Prevents duplicates
+        if(this.state.search_stockArray.includes(stockValue)){
+            alert("Already exists");
+            document.querySelector(".stock-code__value").value = '';
+        }else{
+            checkForExist = true;
+        }
 
         const table_response = await stock.get('/quote', {
             params: {
@@ -56,14 +63,16 @@ class SearchCard extends React.Component{
         this.setState({
             search_stockArray: this.state.search_stockArray.concat(stockValue),
         }, () => {
-            this.props.sendSearchResult(table_response.data);
-            if(table_response.data === "Symbol not supported"){
-                this.props.sendSearchGraphResult(true, {stockValue: stockValue, response: graph_response.data});
-            }else{
-                this.props.sendSearchGraphResult(false, {stockValue: stockValue, response: graph_response.data});
-            }
-            document.querySelector(".stock-code__value").value = '';
-        })
+            if(checkForExist){
+                this.props.sendSearchResult(table_response.data);
+                if(table_response.data === "Symbol not supported"){
+                    this.props.sendSearchGraphResult(true, {stockValue: stockValue, response: graph_response.data});
+                }else{
+                    this.props.sendSearchGraphResult(false, {stockValue: stockValue, response: graph_response.data});
+                }
+                document.querySelector(".stock-code__value").value = '';
+            };
+        });
     };
 
     // @desc: validateBtn checks for the onKeyUp change of the input and disables
