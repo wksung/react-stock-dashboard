@@ -6,22 +6,28 @@ import { FaChartBar } from 'react-icons/fa';
 
 class FilterCard extends React.Component{
 
-    // COMMENT: Not Done
-
-    // TODO: PLEASE TWO WAY BIND WITH GRAPHCARD DROPDOWN/TITLE -> don't use stockArray
+    // TODO: select option
+    // TODO: change values by filter
 
     state = {
         validator_start_date: '',
         validator_end_date: ''
     };
 
+    // @desc: componentDidUpate checks to see if the showFilterDOM is
+    //        triggered. This is triggered when the API call is done and
+    //        disables the button as default.
     componentDidUpdate(){
         if(this.props.showFilterDOM){
             document.querySelector(".btn-filter").disabled = true;
-        }
+        };
     };
 
-    // date validator 1.0
+    // @desc: start_dateValidator checks for the date of the first date input.
+    //        It also checks for its current date and if the endDate is later
+    //        than the current Date and before the start date it disables the button.
+
+    // @params: val => the value of the date in string (e.g. 2020-05-03)
     start_dateValidator = (val) => {
         let current_date = new Date();
 
@@ -38,7 +44,11 @@ class FilterCard extends React.Component{
         });
     };
 
-    // date validator 2.0
+    // @desc: end_dateValidator checks for the date of the second date input.
+    //        It also checks for its current date and if the startDate is later
+    //        than the current Date and after the start date it disables the button.
+
+    // @params: val => the value of the date in string (e.g. 2020-05-03)
     end_dateValidator = (val) => {
         let current_date = new Date();
     
@@ -54,6 +64,9 @@ class FilterCard extends React.Component{
         });
     };
 
+    // @desc: filterMyChart is a button trigger which checks for the start and end
+    //        date and the stock code value. This runs an API calls and sends it
+    //        back up as props in App.js, and also resets the start and end date.
     filterMyChart = async () => {
         let stockValue = document.querySelector(".filter-select").value;
         let startDate = new Date(document.querySelector("input.start-date").value)/1000;
@@ -77,13 +90,13 @@ class FilterCard extends React.Component{
     render(){
         let optionSelectDOM = '';
 
-        optionSelectDOM = this.props.showStockArray.map((stock, index) => {
+        // @dom: show all the stock values and put it into the select DOM
+        optionSelectDOM = this.props.showGraphData.map((graphData, index) => {
             return (
                 <option 
-                value={ stock } 
-                key={ index } 
-                selected={ stock === this.props.showStockArray[this.props.showStockArray.length - 1] ? 'selected' : 'no' }>
-                    { stock }
+                    value={ graphData.stockValue } 
+                    key={ index } defaultValue={ this.props.showActiveStockCode || '' }>
+                        { graphData.stockValue }
                 </option>
             )
         });

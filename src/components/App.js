@@ -7,18 +7,17 @@ import '../css/styles.css';
 
 class App extends React.Component{
     
-    // TODO: add stockArray into sessionStorage and load it, if it exists
+    // TODO: add into sessionStorage and load it, if it exists
     // TODO: load circle bar
 
     state = {
-        stockArray: [],
         tableData: [],
         graphData: [],
+        activeStockValue: '',
         showFilterDOM: false,
         showFilterData: false,
         showTableData: false,
         showGraphData: false,
-        filteredData: []
     }
 
     // @desc: SearchCard.js does an API call and sends the relevant data for
@@ -27,20 +26,13 @@ class App extends React.Component{
     // @param: data     => an object which has current, highest, lowest etc. values
     //         response => {c: 289.07, h: 299, l: 285.85, o: 286.25, pc: 293.8, t: 1588487630}
     sendSearchResult = (data) => {
-        this.setState({ 
-            tableData: this.state.tableData.concat(data),
-            showFilterDOM: true,
-            showTableData: true
-        });
-    };
-
-    // @desc: In SearchCard.js, there is an array of stock values the user has inserted.
-    // @param: array    => an array of string values
-    //         response => ["AAPL", "TSLA"]
-    sendArrayListResult = (array) => {
-        this.setState({
-            stockArray: array
-        });
+        if(data !== "Symbol not supported"){
+            this.setState({ 
+                tableData: this.state.tableData.concat(data),
+                showFilterDOM: true,
+                showTableData: true
+            });
+        };
     };
 
     // @desc: FilterCard.js does an API call and sends the response_data which is the
@@ -73,7 +65,8 @@ class App extends React.Component{
                     }
                 });
                 this.setState({
-                    graphData: abc
+                    graphData: abc,
+                    activeStockValue: response_data.stockValue
                 });
             };
         };
@@ -84,26 +77,34 @@ class App extends React.Component{
     //        time stamp to readable js time in the x_axis.
     // @param: graph_array => stockValue must be a string and an object of response
     //         response    => { stockValue: AAPL, response: {c: Array(179), h: Array(179) …} }
-    sendSearchGraphResult = (graph_array) => {
+    sendSearchGraphResult = (codeExist, graph_array) => {
         let converted_array = [];   
 
-        if(graph_array.response.s !== "no_data"){
-            for(let i = 0; i < graph_array.response.t.length; i++){
-                converted_array.push(new Date(graph_array.response.t[i] * 1000))
-            };
-            this.setState({
-                graphData: this.state.graphData.concat({
-                    stockValue: graph_array.stockValue,
-                    x_axis: converted_array,
-                    y_axis: graph_array.response.c,
-                }),
-                showGraphData: true
-            });
+        if(!codeExist){
+            if(graph_array.response.s !== "no_data"){
+                for(let i = 0; i < graph_array.response.t.length; i++){
+                    converted_array.push(new Date(graph_array.response.t[i] * 1000))
+                };
+                this.setState({
+                    graphData: this.state.graphData.concat({
+                        stockValue: graph_array.stockValue,
+                        x_axis: converted_array,
+                        y_axis: graph_array.response.c,
+                    }),
+                    showGraphData: true,
+                    activeStockValue: graph_array.stockValue
+                });
+            }else{
+                this.setState({
+                    graphData: this.state.graphData.concat({
+                        stockValue: graph_array.stockValue, 
+                        response: "no_data"
+                    })
+                });
+            }
         }else{
-            this.setState({
-                graphData: this.state.graphData.concat("no_data")
-            });
-        }
+            alert("Stock Code does not exist within the Database.");
+        };
     };
 
     render(){
@@ -114,22 +115,22 @@ class App extends React.Component{
                         <div className="app-container__left">
                             <SearchCard 
                                 sendSearchResult = { this.sendSearchResult }
-                                sendArrayListResult = { this.sendArrayListResult }
                                 sendSearchGraphResult = { this.sendSearchGraphResult }>
                             </SearchCard>
                             <FilterCard
                                 showFilterDOM = { this.state.showFilterDOM }
-                                showStockArray = { this.state.stockArray }
+                                showGraphData = { this.state.graphData }
+                                showActiveStockCode = { this.state.activeStockValue }
                                 getFilteredData = { this.getFilteredData }>
                             </FilterCard>
                         </div>
                         <div className="app-container__right">
                             <div className="card card-container graph">
-                                <div className="card-body">
+                                <div className="card-body" style={{ overflow: 'scroll' }}>
                                     <GraphCard
                                         tableData = { this.state.tableData }
-                                        stockArray = { this.state.stockArray }
                                         showGraphData = { this.state.showGraphData }
+                                        showActiveStockCode = { this.state.activeStockValue }
                                         graphData = { this.state.graphData }
                                         filteredData = { this.state.filteredData }
                                         showFilterData = { this.state.showFilterData }>
@@ -144,7 +145,7 @@ class App extends React.Component{
                         <TableDataCard 
                             showTableData = { this.state.showTableData }
                             tableData = { this.state.tableData }
-                            stockArray = { this.state.stockArray }>
+                            graphData = { this.state.graphData }>
                         </TableDataCard>
                     </div>
                 </div>

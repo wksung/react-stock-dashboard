@@ -4,24 +4,20 @@ import '../css/GraphCard.css';
 
 class GraphCard extends React.Component{
 
-  // COMMENT: Not Done
-
-  // TODO: PLEASE TWO WAY BIND WITH FILTERCARD DROPDOWN -> don't use stockArray
-
   // TODO: change graph colour by it's PC > C
   // TODO: add date next to the stock
+  // TODO: select option
 
   chartRef = React.createRef();
     
   componentDidUpdate() {
 
-    // if there is actual data
+    // @condition: check if there is a viable response from the API call
     if(this.props.showGraphData && this.props.graphData !== 'no_data'){
       
-      var lowOrHighColor = 
-                      this.props.graphData[this.props.graphData.length - 1].y_axis[this.props.graphData[this.props.graphData.length - 1].y_axis.length - 1] > 
-                      this.props.graphData[this.props.graphData.length - 1].y_axis[0] ? '#81b737' : '#d54f4f';
+      var lowOrHighColor = 'white';
 
+      // loops through all the graphData array and makes a graph individually
       for(var i = 0; i < this.props.graphData.length; i++){
         const myChartRef = this.chartRef.current.getContext("2d");
       
@@ -81,25 +77,26 @@ class GraphCard extends React.Component{
             }
         });
       };
-      // show the latest one
+
+      // show the latest stock which is the last one of it's array
       this.checkStockCode(this.props.graphData[this.props.graphData.length - 1].stockValue);
     }else{
+
       // if the data is no_data then show this message
       document.querySelector(".no-graph-data-message").innerHTML = 
       'No Data Currently Available. Markets are closed during weekends and public holidays. Please filter by previous date.';
     };
   };
 
+  // @desc: checkStockCode hide and shows the correct graph depending
+  //        on the stock value clicked.
+
+  // @param: stockCode => value of the select input
   checkStockCode = (stockCode) => {
-    let stockArray = this.props.graphData;
     let graphDOMALL = document.querySelectorAll(".graphDOM");
-
-    for(var i = 0; i < stockArray.length; i++){
-      // make all none
+    for(var i = 0; i < this.props.graphData.length; i++){
       graphDOMALL[i].style.display = 'none';
-
-      if(stockArray[i].stockValue === stockCode){
-        // if the stockcode is matching then show it
+      if(this.props.graphData[i].stockValue === stockCode){
         document.querySelector(".graphDOM."+stockCode).style.display = 'block';
       }
     };
@@ -109,24 +106,21 @@ class GraphCard extends React.Component{
       let optionSelectDOM = '';
       let canvaDOM = '';
 
-      // reverse to make the last one appear in the select
+      // @dom: show all the stock value as a option in select
       optionSelectDOM = this.props.graphData.map((graphData, index) => {
           return (
-              <option 
-                value={ graphData.stockValue } 
-                key={ index }
-                selected={ graphData.stockValue === this.props.graphData[this.props.graphData.length - 1] ? 'selected' : 'no' }>
+              <option value={ graphData.stockValue } key={ index }>
                 { graphData.stockValue }
               </option>
           )
       });
 
-      // looping through the canvas graph DOM
+      // @dom: show all the graphs on the DOM by mapping
       canvaDOM = this.props.graphData.map((graphData, index) => {
           return (
             // hiding and showing between graphs
             <div key={ index } className={ index === 0 ? graphData.stockValue + ' ds-block graphDOM' : graphData.stockValue + ' ds-none graphDOM' }>
-              <h2 className="h5 mb-3 stockValue">{ this.props.graphData[this.props.graphData.length - 1].stockValue }</h2>
+              <h2 className="h5 mb-3 stockValue">{ graphData.stockValue }</h2>
               <canvas 
                 id={ 'myChart-' + graphData.stockValue }
                 className="myChart"
@@ -137,7 +131,6 @@ class GraphCard extends React.Component{
       });
     
       return (
-        
           <div className="main__chart">
           { 
             this.props.showGraphData 
