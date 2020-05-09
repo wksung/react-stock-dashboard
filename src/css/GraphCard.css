@@ -17,6 +17,10 @@ canvas.myChart{
     min-height: 325px;
 }
 
+.main__chart{
+    pointer-events: none;
+}
+
 .main__chart-top{
     display: flex;
     align-items: center;
@@ -42,4 +46,34 @@ canvas.myChart{
 .ds-none{
     display: none;
     pointer-events: none;
+}
+
+@media(max-width:991px){
+    canvas.myChart{
+        max-height: none;
+        min-height: unset;
+    }
+    .main__chart{
+        margin-top: 15px;
+    }
+    .main__chart-select{
+        position: relative;
+        right: 0;
+        width: 100%;
+    }
+    .no-graph-data-message{
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        font-size: 14px;
+        text-align: center;
+    }
+    .no-data-message{
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
 }

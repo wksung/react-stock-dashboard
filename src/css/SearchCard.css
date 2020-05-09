@@ -25,3 +25,11 @@
 .btn-search svg{
     margin-left: 7px;
 }
+
+@media(max-width:991px){
+    .search.card-container,
+    .filter.card-container{
+        margin-bottom: 20px;
+        min-height: 160px;
+    }
+}

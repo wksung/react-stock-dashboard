@@ -92,7 +92,7 @@ class GraphCard extends React.Component{
                   { 
                     this.props.graphData.date_data 
                     ? 
-                    <div className="ml-2" style={{ display: 'inline' }}>
+                    <div className="ml-2 d-inline">
                       <span>
                       (
                       { this.convertToDate(this.props.graphData.date_data.filteredStartDate) } 
@@ -101,7 +101,7 @@ class GraphCard extends React.Component{
                       )
                       </span> 
                     </div>
-                    : '' 
+                    : <div className="ml-2 d-inline">(Last 72 Hours)</div> 
                   }
                 </h2>
                 <canvas 

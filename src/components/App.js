@@ -7,9 +7,6 @@ import '../css/styles.css';
 
 class App extends React.Component{
     
-    // FIX: fix for latest 24h
-
-    // TODO: add into sessionStorage and load it, if it exists
     // TODO: load circle bar
 
     state = {
@@ -20,6 +17,7 @@ class App extends React.Component{
         showFilterData: false,
         showTableData: false,
         showGraphData: false,
+        lsArray: []
     }
 
     // @desc: this componentDidUpdate is showing the latest graph which has 
@@ -96,7 +94,14 @@ class App extends React.Component{
     // @param: graph_array => stockValue must be a string and an object of response
     //         response    => { stockValue: AAPL, response: {c: Array(179), h: Array(179) …} }
     sendSearchGraphResult = (codeExist, graph_array) => {
-        let converted_array = [];   
+        
+        let converted_array = [];
+        
+        this.setState({
+            lsArray: this.state.lsArray.concat(graph_array.stockValue)
+        }, () => {
+            localStorage.setItem('historyStockArray', JSON.stringify(this.state.lsArray));
+        });
 
         if(!codeExist){
             if(graph_array.response.s !== "no_data"){
@@ -115,7 +120,7 @@ class App extends React.Component{
                     // this makes the second graph and above show
                     this.setState({
                         showGraphData: true
-                    })
+                    });
                 });
             }else{
                 this.setState({
@@ -127,7 +132,7 @@ class App extends React.Component{
                 }, () => {
                     this.setState({
                         showGraphData: true
-                    })
+                    });
                 });
             }
         }else{
@@ -169,7 +174,11 @@ class App extends React.Component{
                     );
                 }else{
                     return(
-                        <p key={ index } className="no-graph-data-message">No Data Currently Available. Markets are closed during weekends and public holidays. Please filter by previous date.</p>
+                        <p key={ index } 
+                           className="no-graph-data-message">
+                            No Data Currently Available. Markets are closed during weekends 
+                            and public holidays. Please filter by previous date.
+                        </p>
                     )
                 };
             });
@@ -188,7 +197,7 @@ class App extends React.Component{
         });
 
         return (
-            <div className="container-fluid app-container">
+            <div className={ this.state.showGraphData ? "container-fluid app-container" : "container-fluid app-container vh-100" }>
                 <div className="row app-container__row">
                     <div className="col-12 app-container__container">
                         <div className="app-container__left">

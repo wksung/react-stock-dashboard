@@ -13,7 +13,18 @@ class SearchCard extends React.Component{
     // @desc: componentDidMount disables the button search when page loads.
     componentDidMount(){
         document.querySelector(".btn-search").disabled = true;
-    }
+
+        if(localStorage.getItem("historyStockArray") !== null){
+            let lsArray = JSON.parse(localStorage.getItem("historyStockArray"));
+            if(window.confirm("You have saved stocks. Would you like to load them?")){
+                for(var i = 0; i < lsArray.length; i++){
+                    this.sendSearchResult(false, lsArray[i])
+                }
+            }else{
+                localStorage.removeItem("historyStockArray");
+            };
+        };
+    };
 
     // @desc: componentDidUpdate checks for the value of button and removes
     //        the disabled state.
@@ -29,8 +40,14 @@ class SearchCard extends React.Component{
     //        the tableData and graphData and sends it back up to App.js as props.
     //        It also makes the input null, and also checks if the stock code exists
     //        within the API.
-    sendSearchResult = async () => {
-        let stockValue = document.querySelector(".stock-code__value").value.toUpperCase();
+    sendSearchResult = async (torf, value) => {
+        let stockValue;
+        if(torf){
+            stockValue = document.querySelector(".stock-code__value").value.toUpperCase();
+        }else{
+            stockValue = value;
+        }
+
         let startDate = Math.round(new Date().getTime() / 1000);
         let endDate = startDate - (72 * 3600);
         let checkForExist = false;
@@ -94,7 +111,7 @@ class SearchCard extends React.Component{
                            placeholder="Stock Code (e.g. AAPL)" 
                            onKeyUp={ (e) => this.validateBtn(e.target.value) }>
                     </input>
-                    <button className="btn btn-secondary w-100 btn-search" onClick={ this.sendSearchResult }>Search Results<FaSearch /></button>
+                    <button className="btn btn-secondary w-100 btn-search" onClick={ () => this.sendSearchResult(true, '') }>Search Results<FaSearch /></button>
                 </div>
             </div>
         );

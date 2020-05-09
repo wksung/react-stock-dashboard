@@ -6,8 +6,6 @@ import { FaChartBar } from 'react-icons/fa';
 
 class FilterCard extends React.Component{
 
-    // FIX: when you filter on weekend it breaks
-
     state = {
         validator_start_date: '',
         validator_end_date: ''

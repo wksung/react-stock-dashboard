@@ -45,3 +45,51 @@
 .ct-label{
     color: white;
 }
+
+.custom-modal{
+    height: 300px;
+    width: 500px;
+    position: fixed;
+    z-index: 99;
+    background: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    color: black;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.custom-modal__overlay{
+    background: rgba(0,0,0, 0.6);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
+
+@media(max-width:991px){
+    .app-container{
+        height: 100%;
+    }
+    .app-container__container{
+        flex-direction: column;
+    }
+    .app-container__row{
+        height: unset;
+        overflow: auto;
+    }
+    .app-container__left{
+        justify-content: unset;
+        overflow: auto;
+        width: 100%;
+    }
+    .app-container__right{
+        width: 100%;
+    }
+}
