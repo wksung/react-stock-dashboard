@@ -4,6 +4,7 @@
 
 .app-container__row{
     height: 60%;
+    max-height: 415px;
     overflow: hidden;
 }
 
@@ -16,6 +17,7 @@
 .app-container__left{
     width: calc(30% - 10px);
     height: 100%;
+    max-height: 415px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -24,6 +26,7 @@
 
 .app-container__right{
     height: 100%;
+    max-height: 415px;
     width: calc(70% - 10px);
 }
 
@@ -83,6 +86,7 @@
     .app-container__row{
         height: unset;
         overflow: auto;
+        max-height: fit-content;
     }
     .app-container__left{
         justify-content: unset;
@@ -91,5 +95,8 @@
     }
     .app-container__right{
         width: 100%;
+    }
+    .height-100{
+        height: 100%;
     }
 }
