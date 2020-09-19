@@ -1,3 +1,20 @@
+This is a one page react dashboard that utilises the Finnhub's API to retrieve the 
+latest and real time market data of the chosen stock. 
+<br/><br/>
+Alongside the market data, it also shows a graph of the stock and the ability to change
+the data range of the stock to view the change in value.
+<br/><br/>
+The HTTP requests were used with Axios and the graphing was done with Chart.js, with it's 
+CSS framework being Bootstrap 4.
+<br/><br/>
+
+The website can be found here: <br/>
+https://wksung-portfolio.github.io/react-stock-dashboard
+
+The Finnhub's API: <br/>
+https://finnhub.io/
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
