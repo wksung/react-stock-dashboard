@@ -1,5 +1,5 @@
 This is a one page react dashboard that utilises the Finnhub's API to retrieve the 
-latest and real time market data of the chosen stock. 
+latest and real time market data of a stock. 
 <br/><br/>
 Alongside the market data, it also shows a graph of the stock and the ability to change
 the data range of the stock to view the change in value.
