@@ -7,7 +7,8 @@ import { FaSearch } from 'react-icons/fa'
 class SearchCard extends React.Component{
 
     state = {
-        search_stockArray: []
+        search_stockArray: [],
+        loading_api: false
     };
 
     // @desc: componentDidMount disables the button search when page loads.
@@ -67,6 +68,10 @@ class SearchCard extends React.Component{
             }
         });
 
+        if(table_response){
+            this.setState({ loading_api: true });
+        }
+
         const graph_response = await stock.get('/stock/candle', {
             params: {
               symbol: stockValue,
@@ -76,16 +81,17 @@ class SearchCard extends React.Component{
               token: 'bqhq9i7rh5rbubolrqd0'
             }
         });
-                
+        
         this.setState({
             search_stockArray: this.state.search_stockArray.concat(stockValue),
         }, () => {
             if(checkForExist){
-                this.props.sendSearchResult(table_response.data);
-                if(table_response.data === "Symbol not supported"){
-                    this.props.sendSearchGraphResult(true, {stockValue: stockValue, response: graph_response.data});
+                if(table_response.data.c == 0 && table_response.data.h == 0 && table_response.data.l == 0 && table_response.data.o == 0 && table_response.data.pc == 0 && table_response.data.t == 0){
+                    this.props.sendSearchGraphResult("no_data", '');
                 }else{
-                    this.props.sendSearchGraphResult(false, {stockValue: stockValue, response: graph_response.data});
+                    this.props.sendSearchGraphResult(true, {stockValue: stockValue, response: graph_response.data});
+                    this.props.sendSearchResult(table_response.data);
+                    this.setState({ loading_api: false });
                 }
                 document.querySelector(".stock-code__value").value = '';
             };
@@ -111,7 +117,7 @@ class SearchCard extends React.Component{
                            placeholder="Stock Code (e.g. AAPL)" 
                            onKeyUp={ (e) => this.validateBtn(e.target.value) }>
                     </input>
-                    <button className="btn btn-secondary w-100 btn-search" onClick={ () => this.sendSearchResult(true, '') }>Search Results<FaSearch /></button>
+                    <button className="btn btn-secondary w-100 btn-search" onClick={ () => this.sendSearchResult(true, '') } disabled={ this.loading_api }>Search Results<FaSearch /></button>
                 </div>
             </div>
         );

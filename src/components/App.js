@@ -17,8 +17,9 @@ class App extends React.Component{
         showFilterData: false,
         showTableData: false,
         showGraphData: false,
-        lsArray: []
-    }
+        lsArray: [],
+        option: []
+    };
 
     // @desc: this componentDidUpdate is showing the latest graph which has 
     //        been searched and hiding the rest
@@ -94,16 +95,15 @@ class App extends React.Component{
     // @param: graph_array => stockValue must be a string and an object of response
     //         response    => { stockValue: AAPL, response: {c: Array(179), h: Array(179) …} }
     sendSearchGraphResult = (codeExist, graph_array) => {
+        if(codeExist != "no_data"){
+            let converted_array = [];
         
-        let converted_array = [];
-        
-        this.setState({
-            lsArray: this.state.lsArray.concat(graph_array.stockValue)
-        }, () => {
-            localStorage.setItem('historyStockArray', JSON.stringify(this.state.lsArray));
-        });
-
-        if(!codeExist){
+            this.setState({
+                lsArray: this.state.lsArray.concat(graph_array.stockValue)
+            }, () => {
+                localStorage.setItem('historyStockArray', JSON.stringify(this.state.lsArray));
+            });
+    
             if(graph_array.response.s !== "no_data"){
                 for(let i = 0; i < graph_array.response.t.length; i++){
                     converted_array.push(new Date(graph_array.response.t[i] * 1000))
@@ -137,6 +137,7 @@ class App extends React.Component{
             }
         }else{
             alert("Stock Code does not exist within the Database.");
+            window.location.reload(true);
         };
     };
 
@@ -197,7 +198,7 @@ class App extends React.Component{
         });
 
         return (
-            <div className={ this.state.showGraphData ? "container-fluid app-container" : "container-fluid app-container vh-100" }>
+            <div className={ this.state.showGraphData ? "container-fluid app-container" : "container-fluid app-container height-100" }>
                 <div className="row app-container__row">
                     <div className="col-12 app-container__container">
                         <div className="app-container__left">
